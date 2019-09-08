@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+
+generate() {
+    base64 /dev/urandom | tr -dc 'a-zA-Z0-9_-' | fold -w ${1:-$1} | head -n 1
+}
+
+RADIATOR_HOST=`scutil --get LocalHostName`.local
+
+cp template.env .env
+echo "RADIATOR_HOST=$RADIATOR_HOST" >> .env
+echo "MINIO_ACCESS_KEY="`generate 15` >> .env
+echo "MINIO_SECRET_KEY="`generate 32` >> .env
+echo "POSTGRES_PASSWORD="`generate 15` >> .env
+
+echo "Environment configured. Feel free to further adjust .env to your liking:\n=================\n"
+cat .env

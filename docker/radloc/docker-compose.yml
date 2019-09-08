@@ -1,0 +1,63 @@
+version: "3"
+services:
+  minio:
+    image: minio/minio
+    environment:
+      - MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY
+    volumes:
+      - minio_data:/data
+      - minio_config:/root/.minio
+    command: "minio server /data"
+  db:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD
+    volumes:
+      - psql_db:/var/lib/postgresql/data
+  radiator:
+    build: 
+      context: https://github.com/podlove/radiator.git#feature/local-deployment
+    env_file:
+      ".env"
+    environment:
+      PORT: 4000
+      PUBLIC_PORT: 80
+      HOST: '${RADIATOR_HOST}'
+      STORAGE_HOST: minio
+      STORAGE_PORT: 9000
+      STORAGE_ASSET_HOST: 'http://${RADIATOR_HOST}/media'
+      STORAGE_ACCESS_KEY_ID: '${MINIO_ACCESS_KEY}'
+      STORAGE_ACCESS_KEY:  '${MINIO_SECRET_KEY}'
+      SMTP_SERVER: email
+      SMTP_HOSTNAME: email
+      SMTP_PORT: 1025
+      SMTP_USERNAME: ""
+      SMTP_PASSWORD: ""
+
+
+    depends_on:
+      - db
+      - minio
+      - email
+  web:
+    build: 
+      context: ./nginx_local
+      args:
+        RADIATOR_HOST: '${RADIATOR_HOST}'
+    depends_on:
+      - minio
+      - radiator
+    ports:
+      - "80:80"
+  email:
+    image: mailhog/mailhog
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "::1:8025:8025"
+
+
+volumes:
+  minio_data:
+  minio_config:
+  psql_db:
