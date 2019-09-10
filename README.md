@@ -25,7 +25,8 @@ A working [Docker], [docker-compose] setup on your machine.
 Clone this repo:
 
 ```sh
-    git clone https://github.com/podlove/radiator-deploy
+git clone https://github.com/podlove/radiator-deploy
+cd radiator-deploy
 ```
 
 Change to the subfolder for the variant you'd like to deploy. E.g.:
