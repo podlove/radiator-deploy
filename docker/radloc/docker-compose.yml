@@ -17,7 +17,7 @@ services:
       - psql_db:/var/lib/postgresql/data
   radiator:
     build: 
-      context: https://github.com/podlove/radiator.git#feature/local-deployment
+      context: https://github.com/podlove/radiator.git#master
     env_file:
       ".env"
     environment:
@@ -55,6 +55,17 @@ services:
     ports:
       - "127.0.0.1:8025:8025"
       - "::1:8025:8025"
+  cms:
+    build:
+      context: https://github.com/podlove/radiator-cms.git#feature/deploy
+      args:
+        RADIATOR_BASE_URL: 'http://${RADIATOR_HOST}'
+        NUXT_ROOT: '/'
+    environment:
+      RADIATOR_BASE_URL: 'http://${RADIATOR_HOST}'
+      NUXT_ROOT: '/'
+    ports:
+      - "3000:3000"
 
 
 volumes:

@@ -18,6 +18,33 @@ Optionally:
 
 ## Docker
 
+#### Usage
+
+A working [Docker], [docker-compose] setup on your machine.
+
+Clone this repo:
+
+```sh
+    git clone https://github.com/podlove/radiator-deploy
+```
+
+Change to the subfolder for the variant you'd like to deploy. E.g.:
+
+```sh
+cd docker/radloc
+```
+
+Configure the variant, there is a `./configure` script to get you started that will give you pointers what further do customize
+
+Then build and up, usually this should do:
+```
+docker-compose build --parallel && docker-compose up
+```
+
+If everything is running fine, `ctrl-c` out and `docker-compose up -d` and you should be done for basic deployment
+
+### General
+
 There are multiple stages to your Docker strategy.
 
 1. The main [Radiator] repo does have a Dockerfile to form the basis for any docker deployment. 
@@ -31,21 +58,22 @@ There are multiple stages to your Docker strategy.
 
 Basic compose file combination to work for your local mac. `./configure` is getting your `.local` name.
 
-| Service     | URL                                     |
-| ----------- | --------------------------------------- |
-| Radiator    | http://[yourmachine].local:4000         |
-| Minio data  | http://[yourmachine].local/media        |
-| MailHog     | http://localhost:8025                   |
-| GraphiQL    | http://[yourmachine].local/api/graphiql |
-| RestAPI     | http://[yourmachine].local/api/rest/v1  |
-| GraphQL API | http://[yourmachine].local/api/graphql  |
+| Service      | URL                                     |
+| ------------ | --------------------------------------- |
+| Radiator     | http://[yourmachine].local/             |
+| Radiator CMS | http://[yourmachine].local:3000/        |
+| MailHog      | http://localhost:8025                   |
+| Minio data   | http://[yourmachine].local/media        |
+| GraphiQL     | http://[yourmachine].local/api/graphiql |
+| RestAPI      | http://[yourmachine].local/api/rest/v1  |
+| GraphQL API  | http://[yourmachine].local/api/graphql  |
 
 #### Run
 
 ```bash
 cd docker/radloc
 ./configure
-docker-compose build
+docker-compose build --parallel
 docker-compose up
 ```
 
@@ -64,6 +92,7 @@ docker volume rm radloc_minio_config radloc_minio_data radloc_psql_db
 [Radiator]: https://github.com/podlove/radiator
 [docker-compose]: https://docs.docker.com/compose/
 [Dockerfile]: https://docs.docker.com/engine/reference/builder/
+[Docker]: https://www.docker.com
 [MinIO]: https://min.io
 [radiator-cms]: https://github.com/podlove/radiator-cms
 [nginx]: https://www.nginx.com
